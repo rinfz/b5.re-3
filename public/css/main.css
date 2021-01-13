@@ -1,0 +1,121 @@
+:root {
+  --bg: #2c2335;
+  --bg2: #1D0229;
+  --fg: white;
+  --link: #FF00D7;
+  --codebg: #202020;
+}
+
+@font-face {
+  font-family: 'General';
+  src: url('/fonts/Nunito-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: 'Mono';
+  src: url('/fonts/apl385.ttf');
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: 'General', sans-serif;
+}
+
+#wrapper {
+  background-color: var(--bg2);
+  width: 800px;
+  flex: 1;
+  padding: 1rem;
+}
+
+@media screen and (max-width: 1024px) {
+  #wrapper {
+    width: 100%;
+  }
+}
+
+header {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 1rem;
+}
+
+header h1 {
+  text-shadow: 2px 2px var(--link);
+}
+
+header nav {
+  flex-grow: 1;
+  text-align: right;
+}
+
+pre {
+  font-family: 'Mono', monospace;
+  background-color: var(--codebg);
+  padding: 0.5rem;
+  max-height: 400px;
+  overflow-y: scroll;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 11pt;
+}
+
+p {
+  padding-bottom: 0.5rem;
+}
+
+a:link, a:visited {
+  color: var(--link);
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media screen and (max-width: 520px) {
+  .main {
+    display: block;
+  }
+}
+
+article > ul {
+  margin-bottom: 1.2rem;
+  margin-left: 1rem;
+}
+
+ul.indexList > li {
+  list-style-type: none;
+  padding: 3px;
+}
+
+ul.indexList > li > a {
+  display: block;
+  color: var(--link);
+  text-decoration: none;
+  font-size: 16pt;
+  line-height: 1.2rem;
+}
+
+.indexListDate {
+  color: var(--fg);
+  font-size: 10pt;
+}
+
+ul.links > li > a {
+  text-align: right;
+  font-size: 12pt;
+}
