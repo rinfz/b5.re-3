@@ -24,16 +24,18 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: alaviss/setup-nim@0.1.1
-        with:
-          version: 'version-1-4' # The Nim nightly version branch to download
-          path: 'nim'
           
+      - name: git
+        run: apt install -y git
+
       - name: refresh packages
         run: nimble refresh
 
       - name: build site
-        run: nimble build
+        uses: skynet-core/nim@v1.2
+        id: nim-build
+        with:
+          command: 'nimble build'
 
       - name: Copy files
         uses: appleboy/scp-action@master
