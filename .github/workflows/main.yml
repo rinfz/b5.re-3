@@ -24,12 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-          
-      - name: git
-        run: apt install -y git
-
-      - name: refresh packages
-        run: nimble refresh
 
       - name: build site
         uses: skynet-core/nim@v1.2
