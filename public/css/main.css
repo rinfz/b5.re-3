@@ -119,3 +119,14 @@ ul.links > li > a {
   text-align: right;
   font-size: 12pt;
 }
+
+.lh2 {
+  font-family: 'Mono';
+  margin-bottom: 1rem;
+}
+
+.rh2 {
+  font-family: 'Mono';
+  text-align: right;
+  margin-bottom: 1rem;
+}

@@ -95,8 +95,14 @@ proc linkList: string =
 
 proc writeIndex(outDir: string; posts: seq[Post]) =
   let
-    column1 = postList(posts)
-    column2 = linkList()
+    column1 = `div`(
+      h2(class="lh2", "Posts"),
+      postList(posts),
+    )
+    column2 = `div`(
+      h2(class="rh2", "Links"),
+      linkList(),
+    )
   let body = `div`(class="main",
     column1,
     column2,
