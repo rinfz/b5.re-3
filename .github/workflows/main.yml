@@ -24,15 +24,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: install deps
-        run: sudo apt install libpcre3
 
       - name: build
         uses: skynet-core/nim@v1.2
         id: nim-build
-        
-      - name: generate site
-        run: ./b5
+        with:
+          command: 'nimble run --nimcache:/tmp/.cache --nimbleDir:/tmp/.nimble --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -y'
 
       - name: Copy files
         uses: appleboy/scp-action@master
