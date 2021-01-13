@@ -28,6 +28,9 @@ jobs:
         with:
           version: 'version-1-4' # The Nim nightly version branch to download
           path: 'nim'
+          
+      - name: refresh packages
+        run: nimble refresh
 
       - name: build site
         run: nimble build
