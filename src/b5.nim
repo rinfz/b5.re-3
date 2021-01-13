@@ -6,6 +6,7 @@ import sequtils
 import parsecsv
 import algorithm
 import times
+from syntax import highlight
 
 import markdown
 
@@ -23,14 +24,25 @@ let
   githubLink = a(href="https://github.com/rinfz", "Github")
   homeLink = a(href="/", "Home")
 
-func displayBody(post: Post): string = article(markdown(post.body))
+func displayBody(post: Post): string = article(h2(post.header.title), p(post.header.date), markdown(post.body))
 func htmlFilename(post: Post): string = post.filename & ".html"
 proc realDate(post: Post): DateTime = post.header.date.parse("yyyy-MM-dd")
 
 proc parseSnippet(path, name: string): string =
+  let language = case name.split(".")[^1]
+    #  ext   language
+    of "py": "python"
+    of "rs": "rust"
+    of "asm": "asm"
+    of "d": "d"
+    of "cpp": "c++"
+    else: "unknown"
+
   let content = readFile(joinPath(path, "snippet" & name))
-  pre:
-    content
+  if language == "unknown":
+    result = pre(content)
+  else:
+    result = highlight(language, content)
 
 proc processPost(path: string): Post =
   result.filename = lastPathPart(path)
