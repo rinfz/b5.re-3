@@ -40,7 +40,13 @@ body {
 
 @media screen and (max-width: 1024px) {
   #wrapper {
-    width: 100%;
+    width: 95%;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #wrapper {
+    width: 90%;
   }
 }
 
