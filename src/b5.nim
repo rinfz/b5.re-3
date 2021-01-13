@@ -93,14 +93,41 @@ proc linkList: string =
   result = ul(class="indexList links", result)
 
 
+proc birdList: string =
+  var p: CsvParser
+  defer: close(p)
+  p.open(joinPath("content", "birds.csv"))
+  p.readHeaderRow()
+  while p.readRow():
+    result &= li(a(href=p.rowEntry("link"), p.rowEntry("name")))
+  result = ul(id="birdList", result)
+
+proc songList: string =
+  var p: CsvParser
+  defer: close(p)
+  p.open(joinPath("content", "songs.csv"))
+  p.readHeaderRow()
+  while p.readRow():
+    result &= li(a(href=p.rowEntry("link"),
+      p.rowEntry("name"),
+      br(),
+      span(class="indexListDate", p.rowEntry("artist")),
+    ))
+
+  result = ul(class="indexList", result)
+
 proc writeIndex(outDir: string; posts: seq[Post]) =
   let
     column1 = `div`(
       h2(class="lh2", "Posts"),
       postList(posts),
+      h2(class="lh2", style="margin-top:1rem", "Cool Songs"),
+      songList(),
+      h2(class="lh2", style="margin-top:1rem", "Bird Log"),
+      birdList(),
     )
     column2 = `div`(
-      h2(class="rh2", "Links"),
+      h2(class="rh2", "Cool Links"),
       linkList(),
     )
   let body = `div`(class="main",

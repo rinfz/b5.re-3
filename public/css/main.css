@@ -3,6 +3,7 @@
   --bg2: #1D0229;
   --fg: white;
   --link: #FF00D7;
+  --birdLink: #FBDB32;
   --codebg: #202020;
 }
 
@@ -115,6 +116,15 @@ ul.indexList > li > a {
   font-size: 10pt;
 }
 
+ul#birdList {
+  margin-left: 1rem;
+}
+
+ul#birdList > li > a {
+  color: var(--birdLink);
+  text-decoration: none;
+}
+
 ul.links > li > a {
   text-align: right;
   font-size: 12pt;
@@ -129,4 +139,9 @@ ul.links > li > a {
   font-family: 'Mono';
   text-align: right;
   margin-bottom: 1rem;
+}
+
+footer {
+  text-align: center;
+  margin-top: 2rem;
 }
