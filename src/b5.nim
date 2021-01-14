@@ -42,7 +42,7 @@ proc parseSnippet(path, name: string): string =
 
   let content = xt.escape(readFile(joinPath(path, "snippet" & name)))
   if language == "unknown":
-    result = pre(content)
+    result = pre(code(class="plaintext", style="background:var(--codebg)", content))
   else:
     result = pre(code(class=language, style="background:var(--codebg)", content))
 
@@ -73,6 +73,7 @@ proc render(title, body, nav: string; isIndex: bool = false): string =
       <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
       <script>hljs.initHighlightingOnLoad();</script>
     """)
+  result = result.replace("<code>", "<code class=\"plaintext\" style=\"background:var(--codebg)\">")
 
 proc writePost(outDir: string; post: Post) =
   writeFile(joinPath(outDir, post.htmlFilename), render(post.header.title, post.displayBody, homeLink & " " & githubLink))
