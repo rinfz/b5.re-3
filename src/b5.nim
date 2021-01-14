@@ -6,7 +6,7 @@ import sequtils
 import parsecsv
 import algorithm
 import times
-from syntax import highlight
+import xmltree as xt
 
 import markdown
 
@@ -29,20 +29,22 @@ func htmlFilename(post: Post): string = post.filename & ".html"
 proc realDate(post: Post): DateTime = post.header.date.parse("yyyy-MM-dd")
 
 proc parseSnippet(path, name: string): string =
+  # see for language names
+  # https://github.com/highlightjs/highlight.js/blob/master/SUPPORTED_LANGUAGES.md
   let language = case name.split(".")[^1]
     #  ext   language
     of "py": "python"
     of "rs": "rust"
-    of "asm": "asm"
+    of "asm": "x86asm"
     of "d": "d"
-    of "cpp": "c++"
+    of "cpp": "cpp"
     else: "unknown"
 
-  let content = readFile(joinPath(path, "snippet" & name))
+  let content = xt.escape(readFile(joinPath(path, "snippet" & name)))
   if language == "unknown":
     result = pre(content)
   else:
-    result = highlight(language, content)
+    result = pre(code(class=language, style="background:var(--codebg)", content))
 
 proc processPost(path: string): Post =
   result.filename = lastPathPart(path)
@@ -61,8 +63,16 @@ proc processPost(path: string): Post =
     else:
       result.body &= line & '\n'
 
-proc render(title, body, nav: string): string =
-  htmlTemplate.replace("@title", title).replace("@body", body).replace("@nav", nav)
+proc render(title, body, nav: string; isIndex: bool = false): string =
+  result = htmlTemplate.replace("@title", title).replace("@body", body).replace("@nav", nav)
+  if isIndex:
+    result = result.replace("@hl", "")
+  else:
+    result = result.replace("@hl", """
+      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/kimbie.dark.min.css">
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script>
+    """)
 
 proc writePost(outDir: string; post: Post) =
   writeFile(joinPath(outDir, post.htmlFilename), render(post.header.title, post.displayBody, homeLink & " " & githubLink))
@@ -146,7 +156,7 @@ proc writeIndex(outDir: string; posts: seq[Post]) =
     column1,
     column2,
   )
-  writeFile(joinPath(outDir, "index.html"), render("Barely Laughing", body, githubLink))
+  writeFile(joinPath(outDir, "index.html"), render("Barely Laughing", body, githubLink, true))
 
 proc main =
   let

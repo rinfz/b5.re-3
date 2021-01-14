@@ -1,6 +1,7 @@
 import tables
 import htmlgen
 import re
+import pegs
 
 const colours = {
   "special": "#e17b7b",
@@ -11,10 +12,6 @@ const colours = {
 }.toTable
 
 func c(code: string; val: string = "1"): string = "<span style=\"color:" & colours[code] & "\">$" & val & "</span>"
-
-let commonRe = [
-  (re"\b(\d+\.?(\d+)?)", c("number"))
-]
 
 proc hl_D(content: string): string =
   content
@@ -45,4 +42,4 @@ let hlProcs = {
 }.toTable
 
 proc highlight*(language, content: string): string =
-  return pre(hlProcs[language](content.multiReplace(commonRe)))
+  return pre(hlProcs[language](content))

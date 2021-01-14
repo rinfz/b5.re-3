@@ -76,6 +76,10 @@ pre {
   font-size: 11pt;
 }
 
+code {
+  font-family: 'Mono', monospace;
+}
+
 p {
   padding-bottom: 0.5rem;
 }
