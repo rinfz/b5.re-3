@@ -38,6 +38,7 @@ proc parseSnippet(path, name: string): string =
     of "asm": "x86asm"
     of "d": "d"
     of "cpp": "cpp"
+    of "nim": "nim"
     else: "unknown"
 
   let content = xt.escape(readFile(joinPath(path, "snippet" & name)))
@@ -70,7 +71,7 @@ proc render(title, body, nav: string; isIndex: bool = false): string =
   else:
     result = result.replace("@hl", """
       <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/kimbie.dark.min.css">
-      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
       <script>hljs.initHighlightingOnLoad();</script>
     """)
   result = result.replace("<code>", "<code class=\"plaintext\" style=\"background:var(--codebg)\">")
