@@ -19,10 +19,7 @@ type
     header: Header
     filename, body: string
 
-let
-  htmlTemplate = readFile("template.html")
-  githubLink = a(href="https://github.com/rinfz", "Github")
-  homeLink = a(href="/", "Home")
+let htmlTemplate = readFile("template.html")
 
 func displayBody(post: Post): string = article(h2(post.header.title), p(post.header.date), markdown(post.body))
 func htmlFilename(post: Post): string = post.filename & ".html"
@@ -64,7 +61,13 @@ proc processPost(path: string): Post =
     else:
       result.body &= line & '\n'
 
-proc render(title, body, nav: string; isIndex: bool = false): string =
+proc render(title, body: string; isIndex: bool = false): string =
+  let nav = ul(
+    li(a(href="/", "Home")),
+    li(a(href="https://github.com/rinfz", "Github")),
+    li(a(href="/atom.xml", "(rss feed)"))
+  )
+
   result = htmlTemplate.replace("@title", title).replace("@body", body).replace("@nav", nav)
   if isIndex:
     result = result.replace("@hl", "")
@@ -77,7 +80,7 @@ proc render(title, body, nav: string; isIndex: bool = false): string =
   result = result.replace("<code>", "<code class=\"plaintext\" style=\"background:var(--codebg)\">")
 
 proc writePost(outDir: string; post: Post) =
-  writeFile(joinPath(outDir, post.htmlFilename), render(post.header.title, post.displayBody, homeLink & " " & githubLink))
+  writeFile(joinPath(outDir, post.htmlFilename), render(post.header.title, post.displayBody))
 
 proc getAndWritePosts(inDir, outDir: string): seq[Post] =
   createDir(outDir)
@@ -97,9 +100,11 @@ proc postListItem(post: Post): string =
     )
   )
 
+proc sorted(posts: seq[Post]): seq[Post] = posts.sortedByIt(it.realDate).reversed
+
 proc postList(posts: seq[Post]): string =
   ul(class="indexList"):
-    join(posts.sortedByIt(it.realDate).reversed.map(postListItem))
+    join(posts.sorted.map(postListItem))
 
 proc linkList: string =
   var parser: CsvParser
@@ -158,7 +163,50 @@ proc writeIndex(outDir: string; posts: seq[Post]) =
     column1,
     column2,
   )
-  writeFile(joinPath(outDir, "index.html"), render("Barely Laughing", body, githubLink, true))
+  writeFile(joinPath(outDir, "index.html"), render("Barely Laughing", body, true))
+
+proc rssEntry(post: Post): xt.XmlNode =
+  var
+    alternate = xt.newElement("link")
+    title = xt.newElement("title")
+    published = xt.newElement("published")
+    updated = xt.newElement("updated")
+    authTop = xt.newElement("author")
+    authName = xt.newElement("name")
+    authUri = xt.newElement("uri")
+    content = xt.newElement("content")
+
+  alternate.attrs = xt.toXmlAttributes({"type": "text/html", "rel": "alternate", "href": "https://b5.re/posts/" & post.htmlFilename()})
+  title.add(xt.newText(post.header.title))
+  published.add(xt.newText(post.header.date))
+  updated.add(xt.newText(post.header.date))
+  authName.add(xt.newText("Matthew Rawcliffe"))
+  authUri.add(xt.newText("https://b5.re/"))
+  authTop.add(authName)
+  authTop.add(authUri)
+  content.attrs = xt.toXmlAttributes({"type": "html"})
+  content.add(xt.newText(markdown(post.body)))
+
+  result = xt.newXmlTree("entry", [alternate, title, published, updated, authTop, content])
+
+proc writeRss(posts: seq[Post]) =
+  var
+    title = xt.newElement("title")
+    link = xt.newElement("link")
+    self = xt.newElement("link")
+    updated = xt.newElement("updated")
+    authTop = xt.newElement("author")
+    authName = xt.newElement("name")
+  
+  title.add(xt.newText("Barely Laughing"))
+  link.attrs = xt.toXmlAttributes({"href": "https://b5.re/"})
+  self.attrs = xt.toXmlAttributes({"type": "application/atom+xml", "rel": "self", "href": "https://b5.re/atom.xml"})
+  updated.add(xt.newText($(now().utc)))
+  authName.add(xt.newText("Matthew Rawcliffe"))
+  authTop.add(authName)
+
+  let top = xt.newXmlTree("feed", @[title, link, self, updated, authTop] & posts.sorted.map(rssEntry)[0..4])
+  writeFile(joinPath("public", "atom.xml"), $top)
 
 proc main =
   let
@@ -167,6 +215,7 @@ proc main =
 
   let posts = getAndWritePosts(inDir, outDir)
   writeIndex("public", posts)
+  writeRss(posts)
 
 when isMainModule:
   main()

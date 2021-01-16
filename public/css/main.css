@@ -65,6 +65,22 @@ header nav {
   text-align: right;
 }
 
+header nav ul li {
+  list-style-type: none;
+  display: inline;
+  margin-left: 1.5rem;
+}
+
+header nav ul li a {
+  text-decoration: none;
+}
+
+@media screen and (max-width: 520px) {
+  header nav ul li {
+    display: block;
+  }
+}
+
 pre {
   font-family: 'Mono', monospace;
   background-color: var(--codebg);
