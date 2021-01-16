@@ -18,6 +18,7 @@ type
   Post = object
     header: Header
     filename, body: string
+    draft: bool
 
 let htmlTemplate = readFile("template.html")
 
@@ -46,6 +47,7 @@ proc parseSnippet(path, name: string): string =
 
 proc processPost(path: string): Post =
   result.filename = lastPathPart(path)
+  result.draft = false
   for line in lines(joinPath(path, "post.md")):
     var tag, tagBody: string
     if line.scanf("@$w $*", tag, tagBody):
@@ -56,6 +58,8 @@ proc processPost(path: string): Post =
           result.header.date = tagBody
         of "snippet":
           result.body &= parseSnippet(path, tagBody)
+        of "draft":
+          result.draft = true
         else:
           doAssert(false, "unknown tag: " & tag)
     else:
@@ -88,8 +92,9 @@ proc getAndWritePosts(inDir, outDir: string): seq[Post] =
   for kind, path in walkDir(inDir):
     if kind == PathComponent.pcDir:
       let post = processPost(path)
-      result.add(post)
-      writePost(outDir, post)
+      if not post.draft:
+        result.add(post)
+        writePost(outDir, post)
 
 proc postListItem(post: Post): string =
   li(
