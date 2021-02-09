@@ -177,6 +177,7 @@ footer {
   padding: 1rem;
   width: 80%;
   background-color: var(--whiskybg);
+  border-radius: 7px;
 }
 
 .whisky summary {
