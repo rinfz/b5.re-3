@@ -150,6 +150,25 @@ proc songList: string =
 
   result = ul(class="indexList", result)
 
+proc whiskyList: string =
+  var p: CsvParser
+  defer: close(p)
+  p.open(joinPath("content", "whisky.csv"))
+  p.readHeaderRow()
+  while p.readRow():
+    result &= `div`(class="whisky",
+      details(
+        summary(p.rowEntry("name")),
+        ul(style="margin-top:0.5rem",
+          li(strong("Nose") & " " & p.rowEntry("nose")),
+          li(strong("Palate") & " " & p.rowEntry("palate")),
+          li(strong("Finish") & " " & p.rowEntry("finish")),
+          li(strong("Rating") & " " & p.rowEntry("rating")),
+        ),
+        p(style="margin-top:0.5rem", p.rowEntry("notes")),
+      )
+    )
+
 proc writeIndex(outDir: string; posts: seq[Post]) =
   let
     column1 = `div`(
@@ -157,6 +176,8 @@ proc writeIndex(outDir: string; posts: seq[Post]) =
       postList(posts),
       h2(class="lh2", style="margin-top:1rem", "Cool Songs"),
       songList(),
+      h2(class="lh2", style="margin-top:1rem", "Whisky"),
+      whiskyList(),
       h2(class="lh2", style="margin-top:1rem", "Bird Log"),
       birdList(),
     )

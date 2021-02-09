@@ -5,6 +5,7 @@
   --link: #FF00D7;
   --birdLink: #FBDB32;
   --codebg: #202020;
+  --whiskybg: #ae265f;
 }
 
 @font-face {
@@ -170,4 +171,19 @@ ul.links > li > a {
 footer {
   text-align: center;
   margin-top: 2rem;
+}
+
+.whisky {
+  padding: 1rem;
+  width: 80%;
+  background-color: var(--whiskybg);
+}
+
+.whisky summary {
+  cursor: pointer;
+  font-size: 14pt;
+}
+
+.whisky ul li {
+  margin-left: 1rem;
 }
