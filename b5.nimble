@@ -11,4 +11,4 @@ bin           = @["b5"]
 # Dependencies
 
 requires "nim >= 1.4.2"
-requires "markdown >= 0.8.0"
+requires "markdown == 0.8.0"
