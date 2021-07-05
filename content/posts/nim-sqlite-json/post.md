@@ -6,6 +6,6 @@ First check if json support is available with: `pragma compile_options;`. You ar
 
 If it's there, here is an example script written in nim for inserting and retrieving data.
 
-@snippet a.nim
+@snippet 1.nim
 
 Sqlite seems to ship with a decent set of functions for working with json data. If those don't cover your needs, it's just stored as text. You can extract it and work with it just like any other json data your application might use.
