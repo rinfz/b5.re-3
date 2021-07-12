@@ -22,7 +22,8 @@ type
 
 let htmlTemplate = readFile("template.html")
 
-func displayBody(post: Post): string = article(h2(post.header.title), p(post.header.date), markdown(post.body))
+proc displayBody(post: Post): string =
+  article(h2(post.header.title), p(post.header.date), markdown(post.body, config=initGfmConfig()))
 func htmlFilename(post: Post): string = post.filename & ".html"
 proc realDate(post: Post): DateTime = post.header.date.parse("yyyy-MM-dd")
 
